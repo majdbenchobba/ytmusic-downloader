@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+High Quality/
+yt-dlp.exe
