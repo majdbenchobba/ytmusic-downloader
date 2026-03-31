@@ -1,6 +1,9 @@
 import argparse
+import importlib.metadata
 import os
 import shutil
+import subprocess
+import sys
 from pathlib import Path
 
 
@@ -33,7 +36,49 @@ def build_parser() -> argparse.ArgumentParser:
         "--ffmpeg-location",
         help="Optional path to ffmpeg or the folder that contains it.",
     )
+    parser.add_argument(
+        "--update-yt-dlp",
+        action="store_true",
+        help="Update yt-dlp before downloading.",
+    )
     return parser
+
+
+def update_yt_dlp() -> bool:
+    package_name = "yt-dlp"
+
+    try:
+        current_version = importlib.metadata.version(package_name)
+    except importlib.metadata.PackageNotFoundError:
+        current_version = "not installed"
+
+    print(f"Checking for {package_name} updates (current: {current_version})...")
+
+    try:
+        result = subprocess.run(
+            [sys.executable, "-m", "pip", "install", "--upgrade", package_name],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+    except subprocess.CalledProcessError as exc:
+        message = (exc.stderr or exc.stdout or "").strip()
+        print("yt-dlp update failed.")
+        if message:
+            print(message)
+        return False
+
+    try:
+        new_version = importlib.metadata.version(package_name)
+    except importlib.metadata.PackageNotFoundError:
+        new_version = current_version
+
+    if new_version != current_version:
+        print(f"yt-dlp updated to {new_version}.")
+    else:
+        print(f"yt-dlp is already up to date ({new_version}).")
+
+    return True
 
 
 def resolve_ffmpeg_location(explicit_location: str | None) -> str | None:
@@ -101,6 +146,10 @@ def prompt_for_url() -> str:
 def main() -> int:
     parser = build_parser()
     args = parser.parse_args()
+
+    should_update = args.update_yt_dlp or os.getenv("AUTO_UPDATE_YT_DLP", "").lower() == "true"
+    if should_update:
+        update_yt_dlp()
 
     if args.url:
         return 0 if download_track(args.url, args.output_dir, args.playlist, args.ffmpeg_location) else 1

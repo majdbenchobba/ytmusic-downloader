@@ -51,6 +51,12 @@ Explicit ffmpeg path:
 python ytmusic-downloader.py "https://music.youtube.com/watch?v=..." --ffmpeg-location "C:\\path\\to\\ffmpeg"
 ```
 
+Update `yt-dlp` before downloading:
+
+```bash
+python ytmusic-downloader.py --update-yt-dlp "https://music.youtube.com/watch?v=..."
+```
+
 ## Batch
 
 1. Put `yt-dlp.exe` next to `ytmusic-downloader.bat`, or install `yt-dlp`.
@@ -59,8 +65,11 @@ python ytmusic-downloader.py "https://music.youtube.com/watch?v=..." --ffmpeg-lo
 
 By default the files go to `C:\Users\<USERNAME>\Desktop\High Quality`.
 
+The batch script also tries to run `yt-dlp -U` before each download. If you do not want that, set `AUTO_UPDATE_YTDLP=0` in the `.bat` file.
+
 ## Notes
 
 - `yt-dlp.exe` is ignored by git. I keep it locally for convenience.
 - File names depend on whatever metadata the source video exposes.
 - If YouTube extraction changes upstream, updating `yt-dlp` usually fixes it.
+- For the Python version, you can make update checks automatic by setting `AUTO_UPDATE_YT_DLP=true`.
