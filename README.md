@@ -1,6 +1,12 @@
 # YouTube Music WAV Downloader
 
+[![Python tests](https://github.com/majdbenchobba/ytmusic-downloader/actions/workflows/tests.yml/badge.svg)](https://github.com/majdbenchobba/ytmusic-downloader/actions/workflows/tests.yml)
+
 Small downloader for saving YouTube Music or YouTube audio as WAV files.
+
+Use it only for media you own, created, licensed, or otherwise have permission
+to download. You are responsible for complying with copyright law and the
+source platform's terms. The tool does not bypass DRM or access controls.
 
 There are two versions here:
 
@@ -73,3 +79,12 @@ The batch script also tries to run `yt-dlp -U` before each download. If you do n
 - File names depend on whatever metadata the source video exposes.
 - If YouTube extraction changes upstream, updating `yt-dlp` usually fixes it.
 - For the Python version, you can make update checks automatic by setting `AUTO_UPDATE_YT_DLP=true`.
+
+## Tests
+
+```bash
+python -m unittest discover -s tests -v
+```
+
+The automated tests cover local argument and path behavior. They do not
+download media or contact YouTube.
